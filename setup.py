@@ -22,6 +22,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'flask',
+        'urllib3',
     ],
     extras_require=dict(
         tests=tests_require,
