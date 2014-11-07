@@ -12,7 +12,7 @@ proxy_handler = Blueprint('proxy_handler', __name__)
 
 
 @proxy_handler.route(
-    '/', defaults={'path': ''}, methods=['GET', 'HEAD', 'PATCH', 'DELETE']
+    '/', defaults={'path': ''}, methods=['GET', 'HEAD', 'PATCH', 'DELETE', 'POST', 'PUT']
 )
 @proxy_handler.route(
     '/<path:path>', methods=['GET', 'HEAD', 'PATCH', 'DELETE', 'POST', 'PUT']
