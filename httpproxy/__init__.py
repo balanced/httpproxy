@@ -38,14 +38,21 @@ class HTTPProxyApplication(flask.Flask):
         super(HTTPProxyApplication, self).__init__(*args, **kwargs)
         self.register_blueprint(proxy_handler)
 
-        # XXX: what if the config is changed after app is created?
-        self.http_cli = urllib3.PoolManager(
-            # num_pools=self.config.HTTP_CLIENT['num_pools'],
-            # **self.config.HTTP_CLIENT['pool']
-        )
         self.tracer = ohmr.Tracer(coid.Id(prefix='OHM-'))
-
         self.before_request(self.set_trace_id)
+        self._http_cli = None
+
+    @property
+    def http_cli(self):
+        # lazy evaulation so that if config is modified after the application
+        # is created
+        if not self._http_cli:
+            client_config = self.config['HTTP_CLIENT']
+            self._http_cli = urllib3.PoolManager(
+                num_pools=client_config['num_pools'],
+                **client_config['pool']
+            )
+        return self._http_cli
 
     def set_trace_id(self):
         self.tracer.reset()

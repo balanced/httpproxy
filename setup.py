@@ -25,6 +25,7 @@ setup(
         'urllib3 >=1.7.1,<2.0',
         'coid >=0.1,<0.2',
         'ohmr >=0.1,<0.2',
+        'netaddr >=0.7.11,<0.8',
     ],
     extras_require=dict(
         tests=tests_require,
