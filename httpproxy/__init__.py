@@ -47,10 +47,10 @@ class HTTPProxyApplication(flask.Flask):
         # lazy evaulation so that if config is modified after the application
         # is created
         if not self._http_cli:
-            client_config = self.config['HTTP_CLIENT']
+            client_config = self.config.get('HTTP_CLIENT', {})
             self._http_cli = urllib3.PoolManager(
-                num_pools=client_config['num_pools'],
-                **client_config['pool']
+                num_pools=client_config.get('num_pools', 1),
+                **client_config.get('pool', {})
             )
         return self._http_cli
 
