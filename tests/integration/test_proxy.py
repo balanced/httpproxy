@@ -4,29 +4,12 @@ from . import TestHTTPProxyBase
 
 
 class DummyProxy(object):
-
-    def ingress_handler(self, uri, method, headers, data, charset):
-        return dict(
-            uri=uri,
-            method=method,
-            headers=headers,
-            data=data,
-            charset=charset,
-        )
-
-    def egress_handler(self, uri, method, status, headers, data):
-        return dict(
-            uri=uri,
-            method=method,
-            status=status,
-            headers=headers,
-            data=data,
-        )
+    pass
 
 
 class TestHTTPProxy(TestHTTPProxyBase):
 
-    def test_foo(self):
+    def test_simple_request(self):
         proxy = DummyProxy()
         proxy.scheme = 'http'
         proxy.host = 'localhost:{}'.format(self.org_port)
@@ -42,3 +25,7 @@ class TestHTTPProxy(TestHTTPProxyBase):
             self.trace_id_header: str(self.trace_id),
         })
         self.assertEqual(resp.body, 'hi')
+
+        self.assertEqual(len(self._requests), 1)
+        req = self._requests[0]
+        self.assertEqual(req.headers[self.trace_id_header], self.trace_id)

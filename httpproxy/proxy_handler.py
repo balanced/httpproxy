@@ -30,18 +30,19 @@ def proxy_pass(*args, **kwargs):
     )
     data = request.get_data()
     charset = request.charset
-    outgoing_request = proxy.ingress_handler(
-        uri=uri,
-        method=method,
-        headers=headers,
-        data=data,
-        charset=charset,
-    )
-    uri = outgoing_request['uri']
-    method = outgoing_request['method']
-    headers = outgoing_request['headers']
-    data = outgoing_request['data']
-    charset = outgoing_request['charset']
+    if hasattr(proxy, 'ingress_handler'):
+        outgoing_request = proxy.ingress_handler(
+            uri=uri,
+            method=method,
+            headers=headers,
+            data=data,
+            charset=charset,
+        )
+        uri = outgoing_request['uri']
+        method = outgoing_request['method']
+        headers = outgoing_request['headers']
+        data = outgoing_request['data']
+        charset = outgoing_request['charset']
 
     # send outgoing request to server
     root = '{scheme}://{host}'.format(
@@ -70,15 +71,19 @@ def proxy_pass(*args, **kwargs):
     )
 
     # call egress handler of proxy to generate outputing response to client
-    incoming_response = proxy.egress_handler(
-        uri=uri,
-        method=method,
-        status=response.status,
-        headers=response.headers,
-        data=response.data,
-    )
-    status = incoming_response['status']
-    headers = incoming_response['headers']
-    data = incoming_response['data']
+    status = response.status
+    headers = response.headers
+    data = response.data
+    if hasattr(proxy, 'ingress_handler'):
+        incoming_response = proxy.egress_handler(
+            uri=uri,
+            method=method,
+            status=status,
+            headers=headers,
+            data=data,
+        )
+        status = incoming_response['status']
+        headers = incoming_response['headers']
+        data = incoming_response['data']
 
     return Response(status=status, headers=headers.items(), response=data)
