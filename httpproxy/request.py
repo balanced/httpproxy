@@ -10,28 +10,6 @@ import werkzeug.utils
 exc = werkzeug.exceptions
 
 
-class DummyProxy(object):
-    # XXX: just a dummy proxy for dev
-
-    def ingress_handler(self, uri, method, headers, data, charset):
-        return dict(
-            uri=uri,
-            method=method,
-            headers=headers,
-            data=data,
-            charset=charset,
-        )
-
-    def egress_handler(self, uri, method, status, headers, data):
-        return dict(
-            uri=uri,
-            method=method,
-            status=status,
-            headers=headers,
-            data=data,
-        )
-
-
 class RequestTraceMixin(object):
 
     @werkzeug.utils.cached_property
@@ -77,10 +55,8 @@ class RequestProxyMixin(object):
 
     @werkzeug.utils.cached_property
     def proxy(self):
-        # XXX
-        proxy = DummyProxy()
-        proxy.scheme = 'http'
-        proxy.host = 'example.com'
+        factory = flask.current_app.config['HTTP_PROXY_FACTORY']
+        proxy = factory(self)
         return proxy
 
 
