@@ -74,7 +74,7 @@ def proxy_pass(*args, **kwargs):
     status = response.status
     headers = response.headers
     data = response.data
-    if hasattr(proxy, 'ingress_handler'):
+    if hasattr(proxy, 'egress_handler'):
         incoming_response = proxy.egress_handler(
             uri=uri,
             method=method,
