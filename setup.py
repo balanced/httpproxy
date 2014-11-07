@@ -21,8 +21,10 @@ setup(
     version=version,
     packages=find_packages(),
     install_requires=[
-        'flask',
-        'urllib3',
+        'Flask >=0.10.1,<0.11',
+        'urllib3 >=1.7.1,<2.0',
+        'coid >=0.1,<0.2',
+        'ohmr >=0.1,<0.2',
     ],
     extras_require=dict(
         tests=tests_require,

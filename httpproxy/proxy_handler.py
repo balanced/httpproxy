@@ -45,8 +45,8 @@ def proxy_pass(*args, **kwargs):
 
     # send outgoing request to server
     root = '{scheme}://{host}'.format(
-        scheme='http',  # XXX
-        host='example.com' or request.headers['Host']  # XXX
+        scheme=proxy.scheme,
+        host=proxy.host or request.headers['Host'],
     )
     url = urlparse.urljoin(root, uri)
     headers = headers.copy()

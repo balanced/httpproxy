@@ -2,12 +2,15 @@ from __future__ import unicode_literals
 
 import urllib3
 import flask
+import coid
+import ohmr
 import werkzeug.exceptions
 import werkzeug.http
 import werkzeug.datastructures
 import werkzeug.utils
 
 from .proxy_handler import proxy_handler
+from .request import ProxyRequest
 
 __version__ = '0.0.0'
 
@@ -26,67 +29,6 @@ class ProxyAuthentication(werkzeug.exceptions.HTTPException):
     )
 
 
-class DummyProxy(object):
-    # XXX: just a dummy proxy for dev
-
-    def ingress_handler(self, uri, method, headers, data, charset):
-        return dict(
-            uri=uri,
-            method=method,
-            headers=headers,
-            data=data,
-            charset=charset,
-        )
-
-    def egress_handler(self, uri, method, status, headers, data):
-        return dict(
-            uri=uri,
-            method=method,
-            status=status,
-            headers=headers,
-            data=data,
-        )
-
-
-class RequestProxyMixin(object):
-
-    @werkzeug.utils.cached_property
-    def proxy_authorization(self):
-        header = self.environ.get('HTTP_PROXY_AUTHORIZATION')
-        value = werkzeug.http.parse_authorization_header(header)
-        if isinstance(value, tuple):
-            username, password = value
-            value = werkzeug.datastructures.Authorization('Basic', {
-                'username': username,
-                'password': password,
-            })
-        return value
-
-    @werkzeug.utils.cached_property
-    def has_proxy(self):
-        try:
-            self.proxy
-        except exc.HTTPException:
-            return False
-        return True
-
-    @werkzeug.utils.cached_property
-    def proxy(self):
-        # XXX
-        proxy = DummyProxy()
-        return proxy
-
-
-class ProxyRequest(
-    # RequestTraceMixin,
-    # RequestNetworkMixin,
-    # RequestMIMEMixin,
-    RequestProxyMixin,
-    flask.Request,
-):
-    pass
-
-
 class HTTPProxyApplication(flask.Flask):
 
     request_class = ProxyRequest
@@ -101,3 +43,10 @@ class HTTPProxyApplication(flask.Flask):
             # num_pools=self.config.HTTP_CLIENT['num_pools'],
             # **self.config.HTTP_CLIENT['pool']
         )
+        self.tracer = ohmr.Tracer(coid.Id(prefix='OHM-'))
+
+        self.before_request(self.set_trace_id)
+
+    def set_trace_id(self):
+        self.tracer.reset()
+        # newrelic.agent.add_custom_parameter('trace_id', self.tracer.id)
