@@ -51,8 +51,9 @@ def proxy_pass(*args, **kwargs):
     url = urlparse.urljoin(root, uri)
     headers = headers.copy()
 
-    # if config.TRACE_ID_HTTP_HEADER not in headers:
-    #     headers[config.TRACE_ID_HTTP_HEADER] = tracer.id
+    tracer_id_header = current_app.config['TRACE_ID_HTTP_HEADER']
+    if tracer_id_header not in headers:
+        headers[tracer_id_header] = current_app.tracer.id
 
     # http://stackoverflow.com/a/7993378
     if isinstance(url, unicode):

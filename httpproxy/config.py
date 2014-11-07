@@ -25,3 +25,5 @@ HTTP_CLIENT = {
     'num_pools': 1,
     'pool': {}
 }
+
+TRACE_ID_HTTP_HEADER = 'X-Balanced-Guru'
