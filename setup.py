@@ -21,8 +21,7 @@ setup(
     version=version,
     packages=find_packages(),
     install_requires=[
-        'pyramid',
-        'pyramid_debugtoolbar',
+        'flask',
     ],
     extras_require=dict(
         tests=tests_require,
