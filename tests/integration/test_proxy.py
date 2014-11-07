@@ -35,7 +35,7 @@ class TestHTTPProxy(TestHTTPProxyBase):
             def ingress_handler(self, uri, method, headers, data, charset):
                 uri += 'appended'
                 data *= 2
-                headers['Content-Length'] = len(data)
+                headers['Content-Length'] = str(len(data))
                 return dict(
                     uri=uri,
                     method=method,
@@ -62,3 +62,41 @@ class TestHTTPProxy(TestHTTPProxyBase):
         self.assertEqual(req.url, 'http://localhost:80/appended')
         self.assertEqual(req.get_data(), data * 2)
         self.assertEqual(int(req.headers['Content-Length']), len(data) * 2)
+
+    def test_egress_handler(self):
+
+        class EgressModifyProxy(DummyProxy):
+
+            def egress_handler(self, uri, method, status, headers, data):
+                status = 201
+                data = data.replace('foobar', 'eggs spam')
+                headers['Content-Length'] = str(len(data))
+                return dict(
+                    status=status,
+                    headers=headers,
+                    data=data,
+                )
+        proxy = EgressModifyProxy()
+        proxy.scheme = 'http'
+        proxy.host = 'localhost:{}'.format(self.org_port)
+        self.proxy_app.config['HTTP_PROXY_FACTORY'] = lambda request: proxy
+        data = 'I love foobar'
+        self._add_response(
+            status_code=200,
+            content_type='text/html',
+            data=data,
+        )
+
+        resp = self.testapp.post(
+            '/',
+            headers={
+                self.trace_id_header: str(self.trace_id),
+            },
+            status=201,
+        )
+        expected_body = 'I love eggs spam'
+        self.assertEqual(resp.body, expected_body)
+        self.assertEqual(
+            int(resp.headers['Content-Length']),
+            len(expected_body),
+        )
