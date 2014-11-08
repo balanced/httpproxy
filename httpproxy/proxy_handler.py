@@ -54,7 +54,7 @@ def proxy_pass(*args, **kwargs):
 
     tracer_id_header = current_app.config.get('TRACE_ID_HTTP_HEADER')
     if tracer_id_header and tracer_id_header not in headers:
-        headers[tracer_id_header] = current_app.tracer.id
+        headers[tracer_id_header] = request.trace_id
 
     # http://stackoverflow.com/a/7993378
     if isinstance(url, unicode):

@@ -63,7 +63,6 @@ class RequestProxyMixin(object):
 class ProxyRequest(
     RequestTraceMixin,
     RequestNetworkMixin,
-    # RequestMIMEMixin,
     RequestProxyMixin,
     flask.Request,
 ):
