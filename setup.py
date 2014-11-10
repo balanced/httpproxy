@@ -20,6 +20,9 @@ setup(
     name='httpproxy',
     version=version,
     packages=find_packages(),
+    url='https://github.com/balanced/httpproxy',
+    author='victorlin',
+    author_email='victorlin@balancedpayments.com',
     install_requires=[
         'Flask >=0.10.1,<0.11',
         'urllib3 >=1.7.1,<2.0',
