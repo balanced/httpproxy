@@ -11,8 +11,8 @@ tests_require = [
 
 version = '0.0.0'
 try:
-    import htppproxy
-    version = htppproxy.__version__
+    import httpproxy
+    version = httpproxy.__version__
 except ImportError:
     pass
 
