@@ -17,18 +17,6 @@ __version__ = '0.0.0'
 exc = werkzeug.exceptions
 
 
-class ProxyAuthentication(werkzeug.exceptions.HTTPException):
-
-    code = 407
-
-    description = (
-        'The server could not verify that you are authorized to access '
-        'the URL requested.  You either supplied the wrong credentials (e.g. '
-        'a bad password), or your browser doesn\'t understand how to supply '
-        'the credentials required.'
-    )
-
-
 class HTTPProxyApplication(flask.Flask):
 
     request_class = ProxyRequest
