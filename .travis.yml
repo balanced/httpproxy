@@ -3,7 +3,6 @@ python:
   - '2.7'
 # command to install dependencies
 install: 
-  - 'pip install blumpkin>=0.2.3'
   - 'easy_install -U setuptools'
   - 'pip install -U pip'
   - 'pip install -e .[tests]'
@@ -12,8 +11,12 @@ script:
   - 'nosetests -sv --with-coverage'
   - 'pip install flake8 --use-mirrors'
   - 'flake8 httpproxy --ignore=E501,W293'
-after_success:
-- blumpkin publish --on-tag
-env:
-  global:
-  - secure: YOYi5f+zfjK4ZwPBsUXexGrRS0eGmdUW6Wj4LWzo0xd0P29au2hWOhcXipDwAH7VNk/GiMwhbaHEEKtyVp6ia+oWrPLR/y4Z05hNELem8mE97olII9KiER2FGfjuTqtZvyNe1BSc2CXQLBxPQteD6QV/7cDQbjB1CJ7bIfwzNKE=
+deploy:
+  provider: pypi
+  server: https://pypi.vandelay.io/balanced/prod/
+  user: omnibus
+  password:
+    secure: IO8Sw4uwq6izu0M5LWdr5TnF0yB0uWDcWuJSe8jR9cgklzvymwTLeqtIsnV+I+UQcTQJ2gJnUHCyTEaSiuq2WUXFNEOFN1fyW/027DyLt8pVHgMUhKTqPaFrW17CSyA53fvfiEAlMeJVSRv2FJWEZOPeAAGRmbzxSfka5sKPJy4=
+  on:
+    all_branches: true
+    tags: true
