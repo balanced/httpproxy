@@ -75,3 +75,28 @@ attributes. The `scheme` is target HTTP server scheme to be used, can be either
 `http` or `https`. And the `host` is the host name of target server. Proxy can
 also provides `ingress_handler` and `egress_handler` methods for manipulating
 ingress requests and egress requests. 
+
+ingress_handler
+---------------
+
+`ingress_handler` method is called to handle incoming requests if provided. Passed arguments are
+
+ - `uri` - Target URI in the request
+ - `method` - HTTP method, e.g. `GET`, `POST` and etc.
+ - `headers` - Headers of the request as a `dict`
+ - `data` - HTTP request body as a string
+ - `charset` - Encoding of the data body
+
+And the handler should return a dict which contains keys as listed above. A do-nothing `ingress_handler` looks like this:
+
+```python
+def ingress_handler(self, uri, method, headers, data, charset):
+    return dict(
+        uri=uri,
+        method=method,
+        headers=headers,
+        data=data,
+        charset=charset,
+    )
+
+```
