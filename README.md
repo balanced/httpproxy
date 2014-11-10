@@ -79,7 +79,7 @@ ingress requests and egress requests.
 ingress_handler
 ---------------
 
-`ingress_handler` method is called to handle incoming requests if provided. Passed arguments are
+`ingress_handler` method will be called to handle incoming requests and return outgoing requests if provided. Passed arguments are
 
  - `uri` - Target URI in the request
  - `method` - HTTP method, e.g. `GET`, `POST` and etc.
@@ -87,7 +87,7 @@ ingress_handler
  - `data` - HTTP request body as a string
  - `charset` - Encoding of the data body
 
-And the handler should return a dict which contains keys as listed above. A do-nothing `ingress_handler` looks like this:
+And the handler should return the outgoing request a dict which contains keys listed above. A do-nothing `ingress_handler` looks like this:
 
 ```python
 def ingress_handler(self, uri, method, headers, data, charset):
@@ -97,6 +97,35 @@ def ingress_handler(self, uri, method, headers, data, charset):
         headers=headers,
         data=data,
         charset=charset,
+    )
+
+```
+
+egress_handler
+--------------
+
+`egress_handler` method will be called to handle incoming responses and return outgoing responses if provided. Passed arguments are
+
+ - `uri` - Target URI in the response
+ - `method` - HTTP method, e.g. `GET`, `POST` and etc.
+ - `headers` - Headers of the response as a `dict`
+ - `status` - Status code
+ - `data` - HTTP response body as a string
+
+And the handler should return a dict which contains 
+
+ - `status`
+ - `headers`
+ - `data`
+
+A do-nothing `egress_handler` looks like this:
+
+```python
+def egress_handler(self, uri, method, status, headers, data):
+    return dict(
+        status=status,
+        headers=headers,
+        data=data,
     )
 
 ```
