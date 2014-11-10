@@ -56,4 +56,3 @@ class HTTPProxyApplication(flask.Flask):
 
     def set_trace_id(self):
         self.tracer.reset()
-        # newrelic.agent.add_custom_parameter('trace_id', self.tracer.id)
