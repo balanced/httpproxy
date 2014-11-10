@@ -6,7 +6,7 @@ httpproxy is a simple transparent HTTP proxy library.
 Example
 =======
 
-With httpproxy, it's very easy to implement a transparent proxy that can manipulate both outgoing request and incoming response. Following is a Hodor proxy example, it replaces all words with `hodor` in the response.
+With httpproxy, it's very easy to implement a transparent proxy that can manipulate both requests and responses. Following is a Hodor proxy example, it replaces all words with `hodor` in the response.
 
 ```python
 from __future__ import unicode_literals
