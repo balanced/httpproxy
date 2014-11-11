@@ -12,7 +12,7 @@ import werkzeug.utils
 from .proxy_handler import proxy_handler
 from .request import ProxyRequest
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 exc = werkzeug.exceptions
 
