@@ -11,7 +11,7 @@ script:
 - flake8 httpproxy --ignore=E501,W293
 deploy:
   provider: pypi
-  server: https://pypi.vandelay.io/balanced/prod/
+  server: https://pypi.vandelay.io/balanced/prod/+simple/
   user: omnibus
   password:
     secure: yji7ZyMQ7v+BSEZ1gytHW/zFYnX2TnUSlfrduoayvAIsesh2AD2tZcD0TrMuPKJyMleriLIYvM9bCC1RcdpB8LGvO/YqLXVJqIf+zH9mN+n8LAEdlHLR6ldOlPL7D3p44s9Ekz9Kg1OntoWuQ2KSpreTlthUlxvkrdDy+UfFgXI=
