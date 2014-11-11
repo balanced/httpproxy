@@ -1,6 +1,8 @@
 httpproxy
 =========
 
+[![Build Status](https://travis-ci.org/balanced/httpproxy.svg?branch=master)](https://travis-ci.org/balanced/httpproxy)
+
 httpproxy is a simple transparent HTTP proxy library.
 
 Example
