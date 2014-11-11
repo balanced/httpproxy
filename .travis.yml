@@ -1,22 +1,20 @@
 language: python
 python:
-  - '2.7'
-# command to install dependencies
-install: 
-  - 'easy_install -U setuptools'
-  - 'pip install -U pip'
-  - 'pip install -e .[tests]'
-# command to run tests
-script: 
-  - 'nosetests -sv --with-coverage'
-  - 'pip install flake8 --use-mirrors'
-  - 'flake8 httpproxy --ignore=E501,W293'
+- '2.7'
+install:
+- easy_install -U setuptools
+- pip install -U pip
+- pip install -e .[tests]
+script:
+- nosetests -sv --with-coverage
+- pip install flake8 --use-mirrors
+- flake8 httpproxy --ignore=E501,W293
 deploy:
   provider: pypi
   server: https://pypi.vandelay.io/balanced/prod/
   user: omnibus
   password:
-    secure: IO8Sw4uwq6izu0M5LWdr5TnF0yB0uWDcWuJSe8jR9cgklzvymwTLeqtIsnV+I+UQcTQJ2gJnUHCyTEaSiuq2WUXFNEOFN1fyW/027DyLt8pVHgMUhKTqPaFrW17CSyA53fvfiEAlMeJVSRv2FJWEZOPeAAGRmbzxSfka5sKPJy4=
+    secure: yji7ZyMQ7v+BSEZ1gytHW/zFYnX2TnUSlfrduoayvAIsesh2AD2tZcD0TrMuPKJyMleriLIYvM9bCC1RcdpB8LGvO/YqLXVJqIf+zH9mN+n8LAEdlHLR6ldOlPL7D3p44s9Ekz9Kg1OntoWuQ2KSpreTlthUlxvkrdDy+UfFgXI=
   on:
     all_branches: true
     tags: true
