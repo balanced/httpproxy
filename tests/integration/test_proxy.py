@@ -100,3 +100,33 @@ class TestHTTPProxy(TestHTTPProxyBase):
             int(resp.headers['Content-Length']),
             len(expected_body),
         )
+
+    def test_post(self):
+        passed_data = []
+
+        class PostProxy(DummyProxy):
+
+            def ingress_handler(self, uri, method, headers, data, charset):
+                passed_data.append(data)
+                return dict(
+                    uri=uri,
+                    method=method,
+                    headers=headers,
+                    data=data,
+                    charset=charset,
+                )
+
+        proxy = PostProxy()
+        proxy.scheme = 'http'
+        proxy.host = 'localhost:{}'.format(self.org_port)
+        self.proxy_app.config['HTTP_PROXY_FACTORY'] = lambda request: proxy
+        self._add_response(
+            status_code=200,
+            content_type='text/html',
+            data='hi',
+        )
+
+        self.testapp.post('/', dict(foo='bar'), headers={
+            self.trace_id_header: str(self.trace_id),
+        })
+        self.assertEqual(passed_data, ['foo=bar'])
