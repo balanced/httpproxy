@@ -66,4 +66,9 @@ class ProxyRequest(
     RequestProxyMixin,
     flask.Request,
 ):
-    pass
+    @property
+    def want_form_data_parsed(self):
+        # Notice: we do not want the reuqest body get parsed, otherwise, the
+        # request.data will be empty if the request's body is POST encoding
+        # or other stuff werkzeug can recognize
+        return False

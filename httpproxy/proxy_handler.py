@@ -28,7 +28,7 @@ def proxy_pass(*args, **kwargs):
         (h, v) for h, v in list(request.headers)
         if not werkzeug.http.is_hop_by_hop_header(h)
     )
-    data = request.get_data()
+    data = request.data
     charset = request.charset
     if hasattr(proxy, 'ingress_handler'):
         outgoing_request = proxy.ingress_handler(

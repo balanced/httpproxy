@@ -86,7 +86,7 @@ class TestHTTPProxyBase(unittest.TestCase):
 
     def setUp(self):
         super(TestHTTPProxyBase, self).setUp()
-        self.proxy_app = HTTPProxyApplication('httpproxy.test')
+        self.proxy_app = HTTPProxyApplication(__name__)
         self.proxy_app.config['TRACE_ID_HTTP_HEADER'] = self.trace_id_header
         self.proxy_app.tracer.reset()
         self.trace_id = self.proxy_app.tracer.id
