@@ -11,6 +11,17 @@ from webtest import TestApp
 from httpproxy import HTTPProxyApplication
 
 
+class OriginRequest(werkzeug.wrappers.Request):
+
+    @property
+    def want_form_data_parsed(self):
+        # this ensures we won't parse the request body as a POST form.
+        # otherwise request.data will be an empty string
+        # (as long as they are parsed as form data)
+        # old werkzeug sucks, there is no way to read the raw body data
+        return False
+
+
 class HTTPOrigin(object):
 
     def __init__(self, trace_id_header):
@@ -35,7 +46,7 @@ class HTTPOrigin(object):
         )
 
     def __call__(self, environ, start_response):
-        request = werkzeug.wrappers.Request(environ)
+        request = OriginRequest(environ)
         trace_id = request.headers.get(self.trace_id_header)
         if trace_id is None:
             response = self.no_trace(request)
@@ -54,26 +65,32 @@ class TestHTTPProxyBase(unittest.TestCase):
     trace_id_header = b'X-Balanced-Guru'
 
     @classmethod
-    def setUpClass(cls):
-        super(TestHTTPProxyBase, cls).setUpClass()
-
-        # origin
-
-        cls.org_app = HTTPOrigin(cls.trace_id_header)
-        cls.org_port = cls._select_port()
+    def run_app(cls, app):
+        port = cls._select_port()
 
         def serve_org():
+            #from waitress import serve
+            #serve(app, host='localhost', port=port)
+            #return
             werkzeug.serving.run_simple(
                 hostname='localhost',
-                port=cls.org_port,
-                application=cls.org_app,
+                port=port,
+                application=app,
                 use_reloader=False,
                 threaded=True,
             )
 
-        org_thd = threading.Thread(target=serve_org)
-        org_thd.daemon = True
-        org_thd.start()
+        thread = threading.Thread(target=serve_org)
+        thread.daemon = True
+        thread.start()
+        return port, thread
+
+    @classmethod
+    def setUpClass(cls):
+        super(TestHTTPProxyBase, cls).setUpClass()
+        # origin
+        cls.org_app = HTTPOrigin(cls.trace_id_header)
+        cls.org_port, _ = cls.run_app(cls.org_app)
 
     @classmethod
     def _select_port(cls):
