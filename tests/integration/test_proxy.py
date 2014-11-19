@@ -62,7 +62,7 @@ class TestHTTPProxy(TestHTTPProxyBase):
         self.assertEqual(len(self._requests), 1)
         req = self._requests[0]
         self.assertEqual(req.url, 'http://localhost:80/appended')
-        self.assertEqual(req.get_data(), data * 2)
+        self.assertEqual(req.data, data * 2)
         self.assertEqual(int(req.headers['Content-Length']), len(data) * 2)
 
     def test_egress_handler(self):
