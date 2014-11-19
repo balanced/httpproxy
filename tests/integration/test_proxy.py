@@ -155,8 +155,8 @@ class TestHTTPProxy(TestHTTPProxyBase):
 
         proxy_port, _ = self.run_app(self.proxy_app.wsgi_app)
         requests.get(
-            'http://localhost:{}/foo/bar'.format(self.org_port),
+            'http://localhost:{}/Foo/Bar'.format(self.org_port),
             proxies=dict(http='http://localhost:{}'.format(proxy_port)),
         )
 
-        self.assertEqual(uris, ['/foo/bar'])
+        self.assertEqual(uris, ['/Foo/Bar'])
