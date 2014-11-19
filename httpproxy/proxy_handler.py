@@ -22,12 +22,16 @@ def proxy_pass(*args, **kwargs):
 
     # call ingress handler of proxy to generate outgoing request to target
     # server
-    path_info = request.environ['PATH_INFO'].lower()
+    path_info = request.environ['PATH_INFO']
+    lower_path_info = path_info.lower()
     # in some cases, the PATH_INFO will be passed as an absolute URL,
     # for that case, request.url will be encoded like this
     # http://example.com/http%3A//example.com/foo/bar
     # please reference to https://github.com/balanced/httpproxy/issues/5
-    if path_info.startswith('http://') or path_info.startswith('https://'):
+    if (
+        lower_path_info.startswith('http://') or
+        lower_path_info.startswith('https://')
+    ):
         url = path_info
     else:
         url = request.url
