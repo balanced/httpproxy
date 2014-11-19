@@ -4,6 +4,7 @@ python:
 install:
 - easy_install -U setuptools
 - pip install -U pip
+- pip install "werkzeug $WERKZEUG_VERSION"
 - pip install "flask $FLASK_VERSION"
 - pip install -e .[tests]
 script:
@@ -20,6 +21,6 @@ deploy:
     all_branches: true
     tags: true
 env:
-  - FLASK_VERSION=">=0.8,<0.9"
-  - FLASK_VERSION=">=0.9,<0.10"
-  - FLASK_VERSION=">=0.10,<0.11"
+  - FLASK_VERSION=">=0.8,<0.9" WERKZEUG_VERSION="== 0.8.3"
+  - FLASK_VERSION=">=0.9,<0.10" WERKZEUG_VERSION=""
+  - FLASK_VERSION=">=0.10,<0.11" WERKZEUG_VERSION=""
