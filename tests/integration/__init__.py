@@ -54,26 +54,32 @@ class TestHTTPProxyBase(unittest.TestCase):
     trace_id_header = b'X-Balanced-Guru'
 
     @classmethod
-    def setUpClass(cls):
-        super(TestHTTPProxyBase, cls).setUpClass()
-
-        # origin
-
-        cls.org_app = HTTPOrigin(cls.trace_id_header)
-        cls.org_port = cls._select_port()
+    def run_app(cls, app):
+        port = cls._select_port()
 
         def serve_org():
+            #from waitress import serve
+            #serve(app, host='localhost', port=port)
+            #return
             werkzeug.serving.run_simple(
                 hostname='localhost',
-                port=cls.org_port,
-                application=cls.org_app,
+                port=port,
+                application=app,
                 use_reloader=False,
                 threaded=True,
             )
 
-        org_thd = threading.Thread(target=serve_org)
-        org_thd.daemon = True
-        org_thd.start()
+        thread = threading.Thread(target=serve_org)
+        thread.daemon = True
+        thread.start()
+        return port, thread
+
+    @classmethod
+    def setUpClass(cls):
+        super(TestHTTPProxyBase, cls).setUpClass()
+        # origin
+        cls.org_app = HTTPOrigin(cls.trace_id_header)
+        cls.org_port, _ = cls.run_app(cls.org_app)
 
     @classmethod
     def _select_port(cls):

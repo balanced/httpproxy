@@ -7,6 +7,7 @@ tests_require = [
     'webtest',
     'WSGIProxy2',
     'jsonschema',
+    'requests',
 ]
 
 version = '0.0.0'
