@@ -131,3 +131,22 @@ def egress_handler(self, uri, method, status, headers, data):
     )
 
 ```
+
+Handler returns flask.Response object
+-------------------------------------
+
+Sometimes you want your handler returns a response to the client without doing
+proxying, you can actually return a `flask.Response` object. For example,
+in your `ingress_handler`, you only want to echo the content of request,
+you can write a handler like this
+
+```python
+from flask import Response
+
+def ingress_handler(self, uri, method, headers, data, charset):
+    return Response(data)
+
+```
+
+then the response object will be returned to the client immediately. No outging
+request will be sent to the target server.
