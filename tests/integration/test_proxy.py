@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from flask import Response
 import requests
 
 from . import TestHTTPProxyBase
@@ -132,6 +133,28 @@ class TestHTTPProxy(TestHTTPProxyBase):
             self.trace_id_header: str(self.trace_id),
         })
         self.assertEqual(passed_data, ['foo=bar'])
+
+    def test_ingress_handler_return_response(self):
+
+        class FoobarProxy(DummyProxy):
+
+            def ingress_handler(self, uri, method, headers, data, charset):
+                return Response('foobar')
+
+        proxy = FoobarProxy()
+        proxy.scheme = 'http'
+        proxy.host = 'localhost:{}'.format(self.org_port)
+        self.proxy_app.config['HTTP_PROXY_FACTORY'] = lambda request: proxy
+        self._add_response(
+            status_code=200,
+            content_type='text/html',
+            data='hi',
+        )
+
+        resp = self.testapp.post('/', dict(foo='bar'), headers={
+            self.trace_id_header: str(self.trace_id),
+        })
+        self.assertEqual(resp.body, 'foobar')
 
     def test_real_server_uri(self):
         uris = []

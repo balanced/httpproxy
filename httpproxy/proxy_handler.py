@@ -51,6 +51,10 @@ def proxy_pass(*args, **kwargs):
             data=data,
             charset=charset,
         )
+        # if the ingress handler returns a response, that means it doesn't
+        # want to do the proxying, so we simply return the response
+        if isinstance(outgoing_request, Response):
+            return outgoing_request
         uri = outgoing_request['uri']
         method = outgoing_request['method']
         headers = outgoing_request['headers']
