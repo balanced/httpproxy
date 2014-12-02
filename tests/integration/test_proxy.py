@@ -156,6 +156,33 @@ class TestHTTPProxy(TestHTTPProxyBase):
         })
         self.assertEqual(resp.body, 'foobar')
 
+    def test_egress_handler_return_response(self):
+
+        class FoobarProxy(DummyProxy):
+
+            def egress_handler(self, uri, method, status, headers, data):
+                return Response('foobar')
+
+        proxy = FoobarProxy()
+        proxy.scheme = 'http'
+        proxy.host = 'localhost:{}'.format(self.org_port)
+        self.proxy_app.config['HTTP_PROXY_FACTORY'] = lambda request: proxy
+        data = 'I love foobar'
+        self._add_response(
+            status_code=200,
+            content_type='text/html',
+            data=data,
+        )
+
+        resp = self.testapp.post(
+            '/',
+            headers={
+                self.trace_id_header: str(self.trace_id),
+            },
+        )
+        expected_body = 'foobar'
+        self.assertEqual(resp.body, expected_body)
+
     def test_real_server_uri(self):
         uris = []
 
