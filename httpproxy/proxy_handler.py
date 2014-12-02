@@ -99,6 +99,8 @@ def proxy_pass(*args, **kwargs):
             headers=headers,
             data=data,
         )
+        if isinstance(incoming_response, Response):
+            return incoming_response
         status = incoming_response['status']
         headers = incoming_response['headers']
         data = incoming_response['data']
