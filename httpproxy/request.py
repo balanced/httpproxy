@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 import flask
-import netaddr
 import werkzeug.exceptions
 import werkzeug.http
 import werkzeug.datastructures
@@ -15,20 +14,6 @@ class RequestTraceMixin(object):
     @werkzeug.utils.cached_property
     def trace_id(self):
         return flask.current_app.tracer.id
-
-
-class RequestNetworkMixin(object):
-
-    @werkzeug.utils.cached_property
-    def remote_ip_addr(self):
-        return netaddr.IPAddress(self.remote_addr)
-
-    @property
-    def is_remote_ip_allowed(self):
-        return any(
-            self.remote_ip_addr in cidr
-            for cidr in flask.current_app.config['HTTP_PROXY_ALLOWED_CIDRS']
-        )
 
 
 class RequestProxyMixin(object):
@@ -62,7 +47,6 @@ class RequestProxyMixin(object):
 
 class ProxyRequest(
     RequestTraceMixin,
-    RequestNetworkMixin,
     RequestProxyMixin,
     flask.Request,
 ):
